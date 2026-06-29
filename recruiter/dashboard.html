@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recruiter Dashboard - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/recruiter.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <span class="badge">Recruiter Portal</span>
+      <span class="badge" id="recruiterName">Recruiter</span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <!-- Seeding utility alert card for hackathon reviewers -->
+    <div class="glass-card fade-in-up" style="padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-color: var(--border-glow); gap: 16px; flex-wrap: wrap;">
+      <div>
+        <h4 style="font-weight: 800; color: var(--brand-primary);">💡 Hackathon Quick-Start: Seed Candidates Dataset</h4>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">
+          The system detects candidates in the cloud. Click below to bulk-populate Firestore database with 100 sample candidates from the challenge dataset.
+        </p>
+      </div>
+      <button class="btn btn-primary" id="seedDatabaseBtn" style="padding: 10px 20px; font-size: 0.85rem;">
+        🚀 Seed 100 Candidates
+      </button>
+    </div>
+
+    <div class="recruiter-layout fade-in-up" style="animation-delay: 0.1s;">
+      <!-- Left column: Post a Job -->
+      <aside class="job-form-panel glass-card">
+        <h2 class="panel-title">Post New Job Description</h2>
+        <form class="job-form" id="jobForm">
+          <div class="form-group">
+            <label class="form-label" for="jf-title">Job Title</label>
+            <input type="text" id="jf-title" class="glass-input" placeholder="e.g. Senior Machine Learning Engineer" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jf-company">Company</label>
+            <input type="text" id="jf-company" class="glass-input" placeholder="e.g. Redrob AI" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Experience Level</label>
+            <div class="level-grid">
+              <div>
+                <input type="radio" name="jf-level" id="level-junior" class="level-option" value="junior" />
+                <label for="level-junior" class="level-label">Junior</label>
+              </div>
+              <div>
+                <input type="radio" name="jf-level" id="level-mid" class="level-option" value="mid" checked />
+                <label for="level-mid" class="level-label">Mid</label>
+              </div>
+              <div>
+                <input type="radio" name="jf-level" id="level-senior" class="level-option" value="senior" />
+                <label for="level-senior" class="level-label">Senior</label>
+              </div>
+            </div>
+            <!-- Extra level choices -->
+            <select id="jf-level" class="glass-input" style="margin-top: 8px;">
+              <option value="junior">Junior (1-3 yrs)</option>
+              <option value="mid" selected>Mid Level (3-5 yrs)</option>
+              <option value="senior">Senior (5-8 yrs)</option>
+              <option value="lead">Lead/Principal (8+ yrs)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jf-skills">Required Skills (comma separated)</label>
+            <input type="text" id="jf-skills" class="glass-input" placeholder="NLP, Fine-tuning LLMs, Python, PyTorch" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jf-desc">Job Summary / Description</label>
+            <textarea id="jf-desc" class="glass-input glass-textarea" placeholder="Provide background context, tech stack, and goals..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jf-must">Must-Haves (one per line)</label>
+            <textarea id="jf-must" class="glass-input glass-textarea" style="min-height: 80px;" placeholder="B.Tech Computer Science&#10;Experience with Hugging Face&#10;Strong mathematical foundations"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="jf-nice">Nice-to-Haves (one per line)</label>
+            <textarea id="jf-nice" class="glass-input glass-textarea" style="min-height: 80px;" placeholder="Prior publication in NeurIPS&#10;Experience with MLOps pipelines"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Post Job Opportunity</button>
+        </form>
+      </aside>
+
+      <!-- Right column: My Jobs -->
+      <main class="jobs-panel">
+        <div class="jobs-panel-header">
+          <h2 class="jobs-panel-title">My Posted Opportunities</h2>
+          <span class="badge" id="jobsCountBadge">0 posted</span>
+        </div>
+
+        <div id="jobsList">
+          <!-- Dynamic jobs list will go here -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initRecruiterDashboard } from '/src/recruiter.js';
+    import { seedDatabase, getCandidateCount } from '/src/seeder.js';
+    import { toast } from '/src/utils.js';
+
+    initRecruiterDashboard();
+
+    // Setup seeder button trigger
+    const seedBtn = document.getElementById('seedDatabaseBtn');
+    seedBtn.addEventListener('click', async () => {
+      seedBtn.disabled = true;
+      const originalText = seedBtn.textContent;
+      seedBtn.textContent = '⏳ Fetching & Importing...';
+      try {
+        const res = await seedDatabase((imported, total) => {
+          seedBtn.textContent = `⏳ Importing (${imported}/${total})...`;
+        });
+        if (res.skipped) {
+          toast(`Database already seeded with ${res.count} candidates!`, 'info');
+        } else {
+          toast(`Successfully seeded ${res.seeded} candidates!`, 'success');
+        }
+      } catch (err) {
+        console.error(err);
+        toast('Failed to seed database: ' + err.message, 'error');
+      } finally {
+        seedBtn.disabled = false;
+        seedBtn.textContent = originalText;
+        // Trigger page updates
+        const activeCount = await getCandidateCount();
+        console.log("Candidate count in DB is now: ", activeCount);
+      }
+    });
+  </script>
+</body>
+</html>

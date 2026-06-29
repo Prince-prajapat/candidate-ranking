@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In / Register - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body>
+  <!-- No mesh-bg on this page as we use a split layout -->
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <a href="/" class="btn btn-secondary">Home</a>
+    </div>
+  </nav>
+
+  <div class="auth-page">
+    <!-- Left side graphic -->
+    <div class="auth-image">
+      <div class="auth-image-bg"></div>
+      <div class="auth-image-content">
+        <h2>Find your perfect match.</h2>
+        <p>Join the premier AI-driven recruitment platform matching top candidates with the best tech roles.</p>
+      </div>
+    </div>
+    
+    <!-- Right side form -->
+    <div class="auth-content">
+      <div class="auth-container">
+        <div class="auth-logo">
+          <h1 id="authTitle">Welcome Back</h1>
+          <p id="authSubtitle">Sign in to access your Recrob portal</p>
+        </div>
+
+        <div class="auth-card fade-in-up">
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tab-login">Login</button>
+            <button class="auth-tab" id="tab-register">Register</button>
+          </div>
+
+        <div class="auth-error" id="authError">Error message goes here</div>
+
+        <form class="auth-form" id="authForm">
+          <!-- Role selector for Registration -->
+          <div class="form-group" id="roleGroup" style="display: none;">
+            <label class="form-label">I want to join as a:</label>
+            <div class="role-selector">
+              <div>
+                <input type="radio" name="regRole" id="role-candidate" class="role-option" value="candidate" checked />
+                <label for="role-candidate" class="role-label">
+                  <span class="role-icon">🎓</span>
+                  <span>Candidate</span>
+                </label>
+              </div>
+              <div>
+                <input type="radio" name="regRole" id="role-recruiter" class="role-option" value="recruiter" />
+                <label for="role-recruiter" class="role-label">
+                  <span class="role-icon">💼</span>
+                  <span>Recruiter</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Name Field for Registration -->
+          <div class="form-group" id="nameGroup" style="display: none;">
+            <label class="form-label" for="auth-name">Full Name</label>
+            <input type="text" class="glass-input" id="auth-name" placeholder="John Doe" />
+          </div>
+
+          <!-- Email -->
+          <div class="form-group">
+            <label class="form-label" for="auth-email">Email Address</label>
+            <input type="email" class="glass-input" id="auth-email" placeholder="you@example.com" required />
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label class="form-label" for="auth-password">Password</label>
+            <input type="password" class="glass-input" id="auth-password" placeholder="••••••••" required />
+          </div>
+
+          <!-- Action Button -->
+          <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
+        </form>
+
+        <div class="auth-divider">OR</div>
+
+        <!-- Google OAuth -->
+        <button class="btn btn-google" id="googleBtn">
+          <svg style="width: 18px; height: 18px;" viewBox="0 0 24 24">
+            <path fill="#currentColor" d="M21.35,11.1H12v2.7h5.3c-0.22,1.2 -0.9,2.2 -1.9,2.9v2.4h3.1c1.8,-1.7 2.9,-4.1 2.9,-7C21.4,11.8 21.4,11.4 21.35,11.1z" />
+            <path fill="#currentColor" d="M12,21c2.4,0 4.5,-0.8 6,-2.2l-3.1,-2.4c-0.9,0.6 -2,1 -2.9,1 -2.3,0 -4.3,-1.6 -5,-3.8H3.8v2.5C5.3,18.7 8.4,21 12,21z" />
+            <path fill="#currentColor" d="M7,13.6C6.8,13 6.7,12.3 6.7,11.7c0,-0.6 0.1,-1.3 0.3,-1.9V7.3H3.8c-0.7,1.3 -1.1,2.9 -1.1,4.4c0,1.5 0.4,3.1 1.1,4.4L7,13.6z" />
+            <path fill="#currentColor" d="M12,6.8c1.3,0 2.5,0.5 3.4,1.3l2.5,-2.5C16.4,4.3 14.4,3.5 12,3.5c-3.6,0 -6.7,2.3 -8.2,5.2l3.2,2.5C7.7,8.4 9.7,6.8 12,6.8z" />
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { login, register, loginWithGoogle, onAuth } from '/src/auth.js';
+    import { toast, showSpinner, hideSpinner } from '/src/utils.js';
+
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const roleGroup = document.getElementById('roleGroup');
+    const nameGroup = document.getElementById('nameGroup');
+    const submitBtn = document.getElementById('submitBtn');
+    const authForm = document.getElementById('authForm');
+    const authError = document.getElementById('authError');
+    const googleBtn = document.getElementById('googleBtn');
+
+    let mode = 'login'; // 'login' or 'register'
+
+    // Parse pre-selected role from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const preRole = urlParams.get('role');
+    if (preRole === 'candidate' || preRole === 'recruiter') {
+      switchTab('register');
+      document.getElementById(`role-${preRole}`).checked = true;
+    }
+
+    // Tab Switching Logic
+    tabLogin.addEventListener('click', () => switchTab('login'));
+    tabRegister.addEventListener('click', () => switchTab('register'));
+
+    function switchTab(newMode) {
+      mode = newMode;
+      authError.classList.remove('show');
+      if (mode === 'login') {
+        tabLogin.classList.add('active');
+        tabRegister.classList.remove('active');
+        authTitle.textContent = 'Welcome Back';
+        authSubtitle.textContent = 'Sign in to access your Recrob portal';
+        roleGroup.style.display = 'none';
+        nameGroup.style.display = 'none';
+        submitBtn.textContent = 'Sign In';
+      } else {
+        tabLogin.classList.remove('active');
+        tabRegister.classList.add('active');
+        authTitle.textContent = 'Create Account';
+        authSubtitle.textContent = 'Get started with Recrob AI matching';
+        roleGroup.style.display = 'block';
+        nameGroup.style.display = 'block';
+        submitBtn.textContent = 'Get Started';
+      }
+    }
+
+    // Submit Handler
+    authForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      authError.classList.remove('show');
+      showSpinner(submitBtn, mode === 'login' ? 'Signing In...' : 'Registering...');
+
+      const email = document.getElementById('auth-email').value;
+      const password = document.getElementById('auth-password').value;
+      const name = document.getElementById('auth-name').value;
+      const role = document.querySelector('input[name="regRole"]:checked').value;
+
+      try {
+        let user;
+        if (mode === 'login') {
+          user = await login(email, password);
+        } else {
+          if (!name.trim()) {
+            throw new Error('Full Name is required.');
+          }
+          user = await register(email, password, role, name);
+        }
+        toast('Success! Redirecting...', 'success');
+        redirectUser(user);
+      } catch (err) {
+        console.error(err);
+        authError.textContent = err.message || 'Authentication failed.';
+        authError.classList.add('show');
+      } finally {
+        hideSpinner(submitBtn);
+      }
+    });
+
+    // Google Sign-In Handler
+    googleBtn.addEventListener('click', async () => {
+      authError.classList.remove('show');
+      const role = mode === 'register' ? document.querySelector('input[name="regRole"]:checked').value : 'candidate';
+      try {
+        const user = await loginWithGoogle(role);
+        toast('Google login successful!', 'success');
+        redirectUser(user);
+      } catch (err) {
+        console.error(err);
+        authError.textContent = err.message || 'Google Auth failed.';
+        authError.classList.add('show');
+      }
+    });
+
+    function redirectUser(user) {
+      if (user.role === 'candidate') {
+        window.location.href = '/candidate/profile.html';
+      } else if (user.role === 'recruiter') {
+        window.location.href = '/recruiter/dashboard.html';
+      }
+    }
+  </script>
+</body>
+</html>

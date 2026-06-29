@@ -1,13 +1,185 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>candidate-ranking</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Candidate Ranking System</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <style>
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 80vh;
+      gap: 32px;
+    }
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.2;
+      color: var(--text-primary);
+      max-width: 800px;
+      letter-spacing: -0.04em;
+    }
+    .hero-title span {
+      color: var(--brand-primary);
+    }
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      max-width: 600px;
+    }
+    .portal-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 24px;
+    }
+    .portal-card {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: flex-start;
+      text-align: left;
+    }
+    .portal-icon {
+      font-size: 3rem;
+    }
+    .portal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .portal-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      flex-grow: 1;
+    }
+    .stats-section {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 900px;
+      margin-top: 60px;
+      padding: 30px;
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--brand-primary);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+    @media(max-width: 768px) {
+      .hero-title { font-size: 2.5rem; }
+      .portal-cards { grid-template-columns: 1fr; }
+      .stats-section { flex-direction: column; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <a href="/login.html" class="btn btn-secondary">Sign In</a>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <section class="hero-section fade-in-up">
+      <h1 class="hero-title">Discover the Ideal Match <span>Instantly</span> with AI</h1>
+      <p class="hero-subtitle">
+        A multi-signal intelligent candidate matching and ranking platform designed for modern tech recruiters.
+      </p>
+
+      <div class="portal-cards">
+        <!-- Candidate Portal Card -->
+        <div class="portal-card glass-card">
+          <div class="portal-icon">🎓</div>
+          <h2 class="portal-title">For Candidates</h2>
+          <p class="portal-desc">
+            Build your professional profile, showcase your skills, certifications, and experience. Let our AI show your potential to matching recruiters.
+          </p>
+          <a href="/login.html?role=candidate" class="btn btn-primary">Join as Candidate</a>
+        </div>
+
+        <!-- Recruiter Portal Card -->
+        <div class="portal-card glass-card">
+          <div class="portal-icon">💼</div>
+          <h2 class="portal-title">For Recruiters</h2>
+          <p class="portal-desc">
+            Post job descriptions and receive an instant, intelligently ranked shortlist of matches scored based on multi-signal AI parameters.
+          </p>
+          <a href="/login.html?role=recruiter" class="btn btn-primary">Find Candidates</a>
+        </div>
+      </div>
+
+      <div class="stats-section glass-card">
+        <div class="stat-item">
+          <div class="stat-number" id="candidate-count">100,000+</div>
+          <div class="stat-label">Verified Candidates</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">30+</div>
+          <div class="stat-label">AI Signal Checks</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number" id="match-rate">Instant</div>
+          <div class="stat-label">Ranking Match Time</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { onAuth } from '/src/auth.js';
+    import { getCandidateCount } from '/src/seeder.js';
+    
+    // Automatically redirect logged-in users to their portals
+    onAuth((user) => {
+      if (user) {
+        // Fetch custom user role from session
+        const crUser = JSON.parse(sessionStorage.getItem('crUser'));
+        if (crUser) {
+          if (crUser.role === 'candidate') {
+            window.location.href = '/candidate/profile.html';
+          } else if (crUser.role === 'recruiter') {
+            window.location.href = '/recruiter/dashboard.html';
+          }
+        }
+      }
+    });
+
+    // Update real-time candidate count from database
+    async function updateCounts() {
+      try {
+        const count = await getCandidateCount();
+        if (count > 0) {
+          document.getElementById('candidate-count').textContent = count.toLocaleString();
+        }
+      } catch (e) {
+        console.warn("Seeder check skipped or not yet initialized.", e);
+      }
+    }
+    updateCounts();
+  </script>
+</body>
 </html>

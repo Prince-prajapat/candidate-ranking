@@ -1,0 +1,218 @@
+/* css/auth.css — Authentication Portal (Light Split-Screen) */
+
+.auth-page {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+.auth-image {
+  display: none; /* Hidden on small screens */
+  flex: 1;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-hover));
+  position: relative;
+  overflow: hidden;
+  color: white;
+  padding: 60px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media(min-width: 900px) {
+  .auth-image {
+    display: flex;
+  }
+}
+
+.auth-image-bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 40%),
+              radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%);
+  z-index: 1;
+}
+
+.auth-image-content {
+  position: relative;
+  z-index: 2;
+  max-width: 400px;
+}
+.auth-image-content h2 {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.auth-image-content p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+}
+
+.auth-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.auth-logo {
+  text-align: left;
+}
+.auth-logo h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+.auth-logo p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.auth-card {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* ── Auth Tabs ── */
+.auth-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: var(--radius-full);
+  padding: 4px;
+  margin-bottom: 32px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.auth-tab.active {
+  background: #ffffff;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Auth Form & Error ── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.auth-error {
+  display: none;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--red);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.auth-error.show {
+  display: block;
+  animation: slideIn 0.25s ease;
+}
+
+/* ── Role Selector Options ── */
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.role-option {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.role-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.role-icon {
+  font-size: 2rem;
+}
+.role-label span:last-child {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.role-option:checked + .role-label {
+  background: rgba(37, 99, 235, 0.05);
+  border-color: var(--brand-primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.1);
+}
+.role-option:checked + .role-label span:last-child {
+  color: var(--brand-primary);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 32px 0;
+  text-transform: uppercase;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border);
+}
+.auth-divider:not(:empty)::before {
+  margin-right: 16px;
+}
+.auth-divider:not(:empty)::after {
+  margin-left: 16px;
+}
+
+/* ── Google Button ── */
+.btn-google {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid var(--border);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: var(--radius-full);
+}
+.btn-google:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}

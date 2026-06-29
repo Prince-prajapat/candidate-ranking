@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Profile - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/candidate.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <span class="badge">Candidate Portal</span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="candidate-layout fade-in-up">
+      <!-- Sidebar -->
+      <aside class="profile-sidebar glass-card">
+        <div class="sidebar-avatar" id="sidebarAvatar">U</div>
+        <h2 class="sidebar-name" id="userName">User Name</h2>
+        <p class="sidebar-email" id="userEmail"></p>
+
+        <!-- Profile Completeness Progress -->
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>Profile Quality</span>
+            <span id="progressLabel">0% Complete</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="profileProgress" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- Multi-step indicators -->
+        <nav class="step-nav">
+          <div class="step-indicator active" data-step="1">
+            <div class="step-dot">1</div>
+            <span>Personal Info</span>
+          </div>
+          <div class="step-indicator" data-step="2">
+            <div class="step-dot">2</div>
+            <span>Core Skills</span>
+          </div>
+          <div class="step-indicator" data-step="3">
+            <div class="step-dot">3</div>
+            <span>Experience</span>
+          </div>
+          <div class="step-indicator" data-step="4">
+            <div class="step-dot">4</div>
+            <span>Education</span>
+          </div>
+          <div class="step-indicator" data-step="5">
+            <div class="step-dot">5</div>
+            <span>Projects</span>
+          </div>
+          <div class="step-indicator" data-step="6">
+            <div class="step-dot">6</div>
+            <span>Preferences</span>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Form Container -->
+      <main class="form-main glass-card" style="padding: 40px; border-radius: 20px;">
+        <!-- Step 1: Personal Info -->
+        <div class="form-step active" data-step="1">
+          <h2 class="step-title">Personal Information</h2>
+          <p class="step-subtitle">Introduce yourself to prospective employers</p>
+
+          <div class="photo-upload-wrap">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='80' height='80' fill='%231e293b'/%3E%3C/svg%3E" id="pi-photo-preview" alt="Profile Photo" />
+            <div>
+              <label class="form-label" style="margin-bottom: 8px;">Profile Photo</label>
+              <input type="file" id="pi-photo" accept="image/*" class="glass-input" style="padding: 8px;" />
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="pi-name">Full Name</label>
+              <input type="text" id="pi-name" class="glass-input" placeholder="Anonymized or Full Name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pi-location">Location</label>
+              <input type="text" id="pi-location" class="glass-input" placeholder="e.g. San Francisco, CA" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="pi-headline">Headline</label>
+              <input type="text" id="pi-headline" class="glass-input" placeholder="e.g. Frontend Engineer | React, UI/UX" />
+            </div>
+            <div class="form-group full">
+              <label class="form-label" for="pi-bio">Bio / Summary</label>
+              <textarea id="pi-bio" class="glass-input glass-textarea" placeholder="Describe your career goals, technical highlights, and what you're building next..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Skills -->
+        <div class="form-step" data-step="2">
+          <h2 class="step-title">Technical & Soft Skills</h2>
+          <p class="step-subtitle">Add technologies and tools you have experience with</p>
+
+          <div class="skill-add-row">
+            <div class="form-group">
+              <label class="form-label" for="skill-input">Skill Name</label>
+              <input type="text" id="skill-input" class="glass-input" placeholder="e.g. React" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="skill-prof">Proficiency</label>
+              <select id="skill-prof" class="glass-input">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate" selected>Intermediate</option>
+                <option value="advanced">Advanced</option>
+                <option value="expert">Expert</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="skill-years">Years Exp</label>
+              <input type="number" id="skill-years" class="glass-input" value="1" min="0" max="40" />
+            </div>
+            <button type="button" class="btn btn-primary" id="add-skill-btn" style="height: 45px;">Add</button>
+          </div>
+
+          <label class="form-label" style="display: block; margin-bottom: 8px;">My Skills</label>
+          <div id="skills-list">
+            <!-- Dynamic skills here -->
+          </div>
+        </div>
+
+        <!-- Step 3: Experience -->
+        <div class="form-step" data-step="3">
+          <h2 class="step-title">Work Experience</h2>
+          <p class="step-subtitle">Add your career timeline, roles, and achievements</p>
+
+          <div id="exp-list" style="margin-bottom: 20px;">
+            <!-- Dynamic entries here -->
+          </div>
+
+          <button class="add-entry-btn" id="add-exp-btn">+ Add Work Experience</button>
+        </div>
+
+        <!-- Step 4: Education -->
+        <div class="form-step" data-step="4">
+          <h2 class="step-title">Education</h2>
+          <p class="step-subtitle">Your academic background and degree qualifications</p>
+
+          <div id="edu-list" style="margin-bottom: 20px;">
+            <!-- Dynamic entries here -->
+          </div>
+
+          <button class="add-entry-btn" id="add-edu-btn">+ Add Education</button>
+        </div>
+
+        <!-- Step 5: Projects -->
+        <div class="form-step" data-step="5">
+          <h2 class="step-title">Featured Projects</h2>
+          <p class="step-subtitle">Showcase your side projects, open-source work, or portfolios</p>
+
+          <div id="proj-list" style="margin-bottom: 20px;">
+            <!-- Dynamic entries here -->
+          </div>
+
+          <button class="add-entry-btn" id="add-proj-btn">+ Add Project</button>
+        </div>
+
+        <!-- Step 6: Preferences -->
+        <div class="form-step" data-step="6">
+          <h2 class="step-title">Job Preferences & Activity</h2>
+          <p class="step-subtitle">Help recruiters know your availability and requirements</p>
+
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label">Open to Work</div>
+                <div class="toggle-desc">Let recruiters know you are actively seeking matching positions</div>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="act-open" checked />
+                <span class="toggle-knob"></span>
+              </label>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="act-avail">Availability / Notice Period</label>
+                <select id="act-avail" class="glass-input">
+                  <option value="immediately">Immediate</option>
+                  <option value="15 days">15 Days</option>
+                  <option value="30 days">30 Days</option>
+                  <option value="60 days">60 Days</option>
+                  <option value="90 days">90 Days</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="act-roles">Preferred Job Roles (comma separated)</label>
+                <input type="text" id="act-roles" class="glass-input" placeholder="e.g. Frontend Engineer, Fullstack Developer" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="act-sal-min">Expected Salary Min (LPA INR or equivalent)</label>
+                <input type="number" id="act-sal-min" class="glass-input" placeholder="Min" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="act-sal-max">Expected Salary Max (LPA INR or equivalent)</label>
+                <input type="number" id="act-sal-max" class="glass-input" placeholder="Max" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <footer class="form-nav">
+          <button class="btn btn-secondary" id="prevBtn" disabled>&larr; Back</button>
+          <button class="btn btn-primary" id="nextBtn">Next &rarr;</button>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initCandidatePage } from '/src/candidate.js';
+    initCandidatePage();
+  </script>
+</body>
+</html>

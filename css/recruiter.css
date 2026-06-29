@@ -1,0 +1,440 @@
+/* css/recruiter.css — Recruiter Portal (Light Agency Theme) */
+
+.recruiter-layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media(max-width: 1024px) {
+  .recruiter-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Job form panel ── */
+.job-form-panel {
+  padding: 32px;
+}
+.panel-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+.job-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Experience Level Grid ── */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.level-option {
+  position: absolute;
+  opacity: 0;
+  width: 0; height: 0;
+}
+.level-label {
+  display: block;
+  text-align: center;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+}
+.level-option:checked + .level-label {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+}
+
+/* ── Jobs panel (listed jobs) ── */
+.jobs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.jobs-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.jobs-panel-title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.job-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.job-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+.job-card-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.job-card-company {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.delete-job-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.delete-job-btn:hover {
+  color: var(--red);
+}
+
+.job-card-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.job-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 16px;
+  margin-top: 8px;
+}
+.job-card-stats {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+/* ── Results shortlist header ── */
+.results-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 0;
+}
+.results-job-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--text-primary);
+  margin: 0;
+}
+.results-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* ── Statistical Counter Cards ── */
+.results-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media(max-width: 768px) {
+  .results-stats {
+    grid-template-columns: 1fr;
+  }
+}
+.stat-card {
+  padding: 24px;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+.stat-val {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--brand-primary);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.stat-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Filter bar & Export Actions ── */
+.filter-bar {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.filter-score {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.export-bar {
+  display: flex;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+/* ── Candidate list cards ── */
+.candidate-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.candidate-card {
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease;
+}
+.candidate-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.candidate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 24px;
+}
+@media(max-width: 600px) {
+  .candidate-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.candidate-info-block {
+  display: flex;
+  gap: 20px;
+}
+.candidate-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+.candidate-rank-badge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--brand-accent);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.candidate-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.candidate-headline {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.candidate-score-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+@media(max-width: 600px) {
+  .candidate-score-block {
+    align-items: flex-start;
+    text-align: left;
+    margin-left: 76px;
+  }
+}
+.candidate-score-val {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--green);
+}
+.candidate-score-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Reasoning field ── */
+.candidate-reasoning {
+  margin: 20px 0 0;
+  padding: 16px 20px;
+  background: #f8fafc;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  border-left: 4px solid var(--brand-accent);
+}
+
+/* ── Collapsible Content (Experience / Education details) ── */
+.candidate-details-toggle {
+  background: transparent;
+  border: none;
+  color: var(--brand-primary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.candidate-details-toggle:hover {
+  text-decoration: underline;
+}
+
+.candidate-details-content {
+  display: none;
+  border-top: 1px solid var(--border);
+  margin-top: 20px;
+  padding-top: 20px;
+  animation: fadeIn 0.3s ease;
+}
+.candidate-details-content.expanded {
+  display: block;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media(max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.details-section-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.details-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.details-item-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.details-item-sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+.details-item-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── Multi-Signal score breakdown grid ── */
+.candidate-breakdown {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border);
+}
+@media(max-width: 768px) {
+  .candidate-breakdown {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.breakdown-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.breakdown-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.breakdown-bar-track {
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+.breakdown-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  transition: width 0.4s ease;
+}
+.breakdown-val {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}

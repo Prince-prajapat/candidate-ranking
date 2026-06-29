@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ranked Candidate Shortlist - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/recruiter.css" />
+  <style>
+    .results-page-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <a href="/recruiter/dashboard.html" class="btn btn-secondary">Dashboard</a>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="results-page-layout">
+      <!-- Back Link & Job Header Details -->
+      <header class="results-header fade-in-up">
+        <a href="/recruiter/dashboard.html" style="color: var(--cyan); text-decoration: none; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+          &larr; Back to Dashboard
+        </a>
+        <h1 class="results-job-title" id="jobTitle">Job Title</h1>
+        <div class="results-meta">
+          <span class="badge">🏢 <span id="jobCompany">Company</span></span>
+          <span class="badge">💼 Required Level: <span id="jobLevel">Mid</span></span>
+          <button class="btn btn-secondary btn-sm" id="rerankBtn" style="margin-left: auto;">🔄 Re-rank Candidates</button>
+        </div>
+      </header>
+
+      <!-- Stats section -->
+      <section class="results-stats fade-in-up" style="animation-delay: 0.05s;">
+        <div class="stat-card glass-card">
+          <div class="stat-val" id="totalCount">0</div>
+          <div class="stat-label">Candidates Scored</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-val" id="topScore">0%</div>
+          <div class="stat-label">Highest Match Score</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-val" style="color: var(--brand-accent);">100% Offline</div>
+          <div class="stat-label">Privacy-preserving AI Scoring</div>
+        </div>
+      </section>
+
+      <!-- Search, filter and exports -->
+      <section class="glass-card fade-in-up" style="padding: 24px; animation-delay: 0.1s;">
+        <div class="filter-bar">
+          <div class="form-group" style="flex: 1; min-width: 250px;">
+            <label class="form-label" for="filterSearch">Search Candidate / Skill</label>
+            <input type="text" id="filterSearch" class="glass-input" placeholder="e.g. Python, Ira Vora" />
+          </div>
+
+          <div class="form-group filter-score" style="min-width: 220px;">
+            <label class="form-label" for="filterMinScore">Min Match Score: <span id="minScoreLabel">0%</span></label>
+            <input type="range" id="filterMinScore" min="0" max="100" value="0" style="width: 100%;" oninput="document.getElementById('minScoreLabel').textContent = this.value + '%'" />
+          </div>
+        </div>
+
+        <div class="export-bar">
+          <span style="font-size: 0.85rem; color: var(--text-secondary); align-self: center; font-weight: 500;">Export Shortlist:</span>
+          <button class="btn btn-secondary btn-sm" id="exportJSON" style="padding: 8px 16px; font-size: 0.8rem;">📄 Export JSON</button>
+          <button class="btn btn-secondary btn-sm" id="exportCSV" style="padding: 8px 16px; font-size: 0.8rem;">📊 Export CSV</button>
+        </div>
+      </section>
+
+      <!-- Ranked Results Dashboard -->
+      <section id="resultsContainer" class="fade-in-up" style="animation-delay: 0.15s;">
+        <div class="loading-pulse">🤖 Preparing candidate listing...</div>
+      </section>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initResultsPage } from '/src/results.js';
+    initResultsPage();
+  </script>
+</body>
+</html>
