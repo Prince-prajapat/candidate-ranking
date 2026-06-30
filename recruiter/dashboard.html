@@ -13,6 +13,8 @@
   <nav class="navbar">
     <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
     <div class="nav-links">
+      <a href="/recruiter/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+      <a href="/recruiter/candidates.html" class="btn btn-secondary btn-sm">All Candidates</a>
       <span class="badge">Recruiter Portal</span>
       <span class="badge" id="recruiterName">Recruiter</span>
       <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
@@ -25,11 +27,11 @@
       <div>
         <h4 style="font-weight: 800; color: var(--brand-primary);">💡 Hackathon Quick-Start: Seed Candidates Dataset</h4>
         <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">
-          The system detects candidates in the cloud. Click below to bulk-populate Firestore database with 100 sample candidates from the challenge dataset.
+          Bulk-populate Firestore with the official 50-profile sample from the India Runs Data and AI Challenge. The full package includes 100,000 candidates and is better imported server-side.
         </p>
       </div>
       <button class="btn btn-primary" id="seedDatabaseBtn" style="padding: 10px 20px; font-size: 0.85rem;">
-        🚀 Seed 100 Candidates
+        🚀 Seed India Runs Sample
       </button>
     </div>
 

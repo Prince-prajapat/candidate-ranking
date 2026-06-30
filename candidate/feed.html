@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talent Feed - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/candidate.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="portal-nav-links">
+      <a href="/candidate/home.html">🏠 Home</a>
+      <a href="/candidate/profile.html">📝 Edit Profile</a>
+      <a href="/candidate/feed.html" class="active">👥 Talent Feed</a>
+      <a href="/candidate/jobs.html">💼 Jobs</a>
+    </div>
+    <div class="nav-links">
+      <span class="badge">Candidate Portal</span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <header class="page-header fade-in-up">
+      <h1>Talent Feed</h1>
+      <p>Browse open-to-work candidate profiles with public details only.</p>
+    </header>
+
+    <section class="filter-bar fade-in-up">
+      <input type="search" id="feed-role" class="glass-input" placeholder="Filter by role or headline" />
+      <input type="search" id="feed-skill" class="glass-input" placeholder="Filter by skill" />
+      <input type="search" id="feed-location" class="glass-input" placeholder="Filter by location" />
+    </section>
+
+    <section id="feedGrid" class="cards-grid fade-in-up">
+      <div class="loading-pulse">Loading talent feed...</div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initTalentFeed } from '/src/feed.js';
+    initTalentFeed();
+  </script>
+</body>
+</html>

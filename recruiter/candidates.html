@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Candidates - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/recruiter.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="nav-links">
+      <a href="/recruiter/dashboard.html" class="btn btn-secondary btn-sm">Dashboard</a>
+      <a href="/recruiter/candidates.html" class="btn btn-primary btn-sm">All Candidates</a>
+      <span class="badge">Recruiter Portal</span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <header class="results-header fade-in-up">
+      <h1 class="results-job-title">All Sample Candidates</h1>
+      <div class="results-meta">
+        <span class="badge">India Runs Data and AI Challenge</span>
+        <span class="badge" id="candidateCountBadge">0 loaded</span>
+      </div>
+    </header>
+
+    <section class="glass-card fade-in-up recruiter-candidate-tools">
+      <div class="filter-bar">
+        <div class="form-group">
+          <label class="form-label" for="candidateSearch">Search Candidate / Skill</label>
+          <input type="search" id="candidateSearch" class="glass-input" placeholder="e.g. React, Bengaluru, Backend" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="candidateStatus">Availability</label>
+          <select id="candidateStatus" class="glass-input">
+            <option value="">All candidates</option>
+            <option value="open">Open to work</option>
+            <option value="closed">Not open</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="candidateLocation">Location</label>
+          <input type="search" id="candidateLocation" class="glass-input" placeholder="City or country" />
+        </div>
+      </div>
+    </section>
+
+    <section id="candidatesGrid" class="recruiter-candidate-grid fade-in-up">
+      <div class="loading-pulse">Loading sample candidates...</div>
+    </section>
+  </main>
+
+  <div class="candidate-profile-modal" id="candidateModal" aria-hidden="true">
+    <div class="candidate-modal-backdrop" id="candidateModalBackdrop"></div>
+    <article class="candidate-modal-card">
+      <button class="modal-close-btn" id="candidateModalClose" type="button">Close</button>
+      <div id="candidateModalContent"></div>
+    </article>
+  </div>
+
+  <script type="module">
+    import { initRecruiterCandidates } from '/src/recruiterCandidates.js';
+    initRecruiterCandidates();
+  </script>
+</body>
+</html>

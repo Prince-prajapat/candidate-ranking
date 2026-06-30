@@ -1,0 +1,68 @@
+[
+  {
+    "id": "job_ai_platform_engineer",
+    "company": "Redrob AI",
+    "role": "AI Platform Engineer",
+    "location": "Bengaluru, India",
+    "work_mode": "Hybrid",
+    "experience": "3-6 years",
+    "salary_lpa": { "min": 22, "max": 38 },
+    "tags": ["Python", "LLMs", "MLOps", "Kubernetes"],
+    "description": "Build internal AI evaluation, deployment, and monitoring systems for matching and ranking workflows."
+  },
+  {
+    "id": "job_frontend_product_engineer",
+    "company": "Northstar Labs",
+    "role": "Frontend Product Engineer",
+    "location": "Remote",
+    "work_mode": "Remote",
+    "experience": "2-5 years",
+    "salary_lpa": { "min": 16, "max": 28 },
+    "tags": ["React", "TypeScript", "Design Systems", "Testing"],
+    "description": "Own polished candidate and recruiter-facing product surfaces with strong accessibility and performance standards."
+  },
+  {
+    "id": "job_data_engineer_realtime",
+    "company": "FluxData",
+    "role": "Realtime Data Engineer",
+    "location": "Pune, India",
+    "work_mode": "Onsite",
+    "experience": "4-8 years",
+    "salary_lpa": { "min": 24, "max": 42 },
+    "tags": ["Spark", "Kafka", "Airflow", "SQL"],
+    "description": "Design streaming pipelines and warehouse models that power analytics, recommendations, and operational dashboards."
+  },
+  {
+    "id": "job_backend_node_engineer",
+    "company": "HelioStack",
+    "role": "Backend Engineer",
+    "location": "Hyderabad, India",
+    "work_mode": "Hybrid",
+    "experience": "3-7 years",
+    "salary_lpa": { "min": 18, "max": 32 },
+    "tags": ["Node.js", "PostgreSQL", "Redis", "APIs"],
+    "description": "Build reliable API services, background workers, and integrations for a fast-growing SaaS operations platform."
+  },
+  {
+    "id": "job_ml_research_associate",
+    "company": "Tessellate AI",
+    "role": "ML Research Associate",
+    "location": "Gurugram, India",
+    "work_mode": "Hybrid",
+    "experience": "1-3 years",
+    "salary_lpa": { "min": 12, "max": 22 },
+    "tags": ["PyTorch", "NLP", "Evaluation", "Python"],
+    "description": "Prototype NLP models, benchmark retrieval workflows, and support production research experiments."
+  },
+  {
+    "id": "job_cloud_devops_engineer",
+    "company": "OrbitWorks",
+    "role": "Cloud DevOps Engineer",
+    "location": "Mumbai, India",
+    "work_mode": "Flexible",
+    "experience": "5-9 years",
+    "salary_lpa": { "min": 28, "max": 48 },
+    "tags": ["AWS", "Terraform", "Docker", "Kubernetes"],
+    "description": "Manage cloud infrastructure, deployment automation, observability, and release reliability for enterprise systems."
+  }
+]

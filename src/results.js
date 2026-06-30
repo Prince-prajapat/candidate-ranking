@@ -117,7 +117,7 @@ async function runRankingPipeline(jobId) {
           <div class="glass-card" style="padding: 40px; text-align:center; color: var(--text-secondary);">
             <div style="font-size:3rem; margin-bottom:16px;">🎓</div>
             <h3>No Candidates Seeded in Firestore</h3>
-            <p style="font-size:0.9rem; margin-top:8px;">Please go back to the Recruiter Dashboard and click <strong>🚀 Seed 100 Candidates</strong> to load the Redrob challenge dataset.</p>
+            <p style="font-size:0.9rem; margin-top:8px;">Please go back to the Recruiter Dashboard and click <strong>🚀 Seed India Runs Sample</strong> to load the sample recruitment dataset.</p>
           </div>
         `;
       }

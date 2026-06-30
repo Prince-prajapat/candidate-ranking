@@ -6,7 +6,7 @@ import { toast, showSpinner, hideSpinner } from './utils.js';
 
 let currentUser = null;
 let currentStep = 1;
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 // Local model for profile data
 let profileData = {
@@ -15,6 +15,7 @@ let profileData = {
   career_history: [],
   education: [],
   projects: [],
+  achievements: [],
   profile: {
     anonymized_name: '',
     headline: '',
@@ -87,7 +88,8 @@ async function loadProfile() {
         skills: data.skills || [],
         career_history: data.career_history || [],
         education: data.education || [],
-        projects: data.projects || []
+        projects: data.projects || [],
+        achievements: data.achievements || data.certifications || []
       };
     } else {
       // First time user, prefill name from auth
@@ -152,6 +154,13 @@ function populateForm() {
   const salRange = profileData.redrob_signals.expected_salary_range_inr_lpa || {};
   document.getElementById('act-sal-min').value = salRange.min || '';
   document.getElementById('act-sal-max').value = salRange.max || '';
+
+  // Step 7: Achievements
+  const achContainer = document.getElementById('ach-list');
+  achContainer.innerHTML = '';
+  if (profileData.achievements) {
+    profileData.achievements.forEach(item => addAchievementCard(item));
+  }
 }
 
 // ── Form Navigation ──
@@ -182,6 +191,9 @@ function setupNavigation() {
       try {
         await saveProfile();
         toast("Profile saved successfully!", "success");
+        setTimeout(() => {
+          window.location.href = '/candidate/home.html';
+        }, 700);
       } catch (err) {
         console.error(err);
         toast("Failed to save profile: " + err.message, "error");
@@ -216,10 +228,10 @@ function goToStep(step) {
   prevBtn.disabled = currentStep === 1;
   if (currentStep === TOTAL_STEPS) {
     nextBtn.textContent = 'Save Profile';
-    nextBtn.style.background = 'linear-gradient(135deg, var(--green), var(--cyan))';
+    nextBtn.classList.add('save-mode');
   } else {
     nextBtn.textContent = 'Next \u2192';
-    nextBtn.style.background = '';
+    nextBtn.classList.remove('save-mode');
   }
 }
 
@@ -318,6 +330,24 @@ function collectStepData(step) {
     const maxSal = parseFloat(document.getElementById('act-sal-max').value) || 0;
     profileData.redrob_signals.expected_salary_range_inr_lpa = { min: minSal, max: maxSal };
   }
+  else if (step === 7) {
+    const list = [];
+    document.querySelectorAll('#ach-list .entry-card').forEach(card => {
+      const type = card.querySelector('.ach-type').value;
+      const title = card.querySelector('.ach-title').value;
+      const issuer = card.querySelector('.ach-issuer').value;
+      const date = card.querySelector('.ach-date').value;
+      const url = card.querySelector('.ach-url').value;
+      const imageSrc = card.querySelector('.ach-preview')?.src || '';
+      const image = imageSrc.startsWith('data:image/svg+xml') ? '' : imageSrc;
+      const description = card.querySelector('.ach-desc').value;
+
+      if (title || issuer || url || image) {
+        list.push({ type, title, issuer, date, url, image, description });
+      }
+    });
+    profileData.achievements = list;
+  }
 }
 
 // ── Skills tags manager ──
@@ -385,6 +415,9 @@ function setupDynamicSections() {
   document.getElementById('add-edu-btn').addEventListener('click', () => addEducationCard());
   // Projects
   document.getElementById('add-proj-btn').addEventListener('click', () => addProjectCard());
+  // Achievements
+  document.getElementById('add-ach-btn').addEventListener('click', () => addAchievementCard());
+  setupQuickAddProject();
 }
 
 function addExperienceCard(data = {}) {
@@ -542,6 +575,132 @@ function addProjectCard(data = {}) {
   container.appendChild(card);
 }
 
+function addAchievementCard(data = {}) {
+  const container = document.getElementById('ach-list');
+  const card = document.createElement('div');
+  card.className = 'entry-card';
+
+  const imageSrc = data.image || data.certificate_image || '';
+  card.innerHTML = `
+    <div class="entry-card-header">
+      <h4 style="margin:0; font-weight:700;">🏅 Achievement</h4>
+      <button class="remove-entry-btn" type="button">Remove</button>
+    </div>
+    <div class="achievement-upload-row">
+      <img class="ach-preview" src="${imageSrc || placeholderImage()}" alt="Certificate preview" />
+      <div class="form-group" style="margin-bottom:0; flex:1;">
+        <label class="form-label">Certificate / Badge Image</label>
+        <input type="file" class="glass-input ach-image" accept="image/*" style="padding:8px;" />
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select class="glass-input ach-type">
+          <option value="certificate" ${data.type === 'certificate' || !data.type ? 'selected' : ''}>Certificate</option>
+          <option value="award" ${data.type === 'award' ? 'selected' : ''}>Award</option>
+          <option value="hackathon" ${data.type === 'hackathon' ? 'selected' : ''}>Hackathon Win</option>
+          <option value="publication" ${data.type === 'publication' ? 'selected' : ''}>Publication</option>
+          <option value="badge" ${data.type === 'badge' ? 'selected' : ''}>Badge</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input type="text" class="glass-input ach-title" value="${data.title || data.name || ''}" placeholder="e.g. AWS Cloud Practitioner" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Issuer / Organizer</label>
+        <input type="text" class="glass-input ach-issuer" value="${data.issuer || ''}" placeholder="e.g. AWS, HackerRank, IEEE" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input type="date" class="glass-input ach-date" value="${data.date || formatYearAsDate(data.year)}" />
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Credential / Publication URL</label>
+        <input type="url" class="glass-input ach-url" value="${data.url || ''}" placeholder="https://..." />
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Notes</label>
+        <textarea class="glass-input glass-textarea ach-desc" placeholder="Briefly describe the achievement, rank, scope, or result...">${data.description || ''}</textarea>
+      </div>
+    </div>
+  `;
+
+  const imgInput = card.querySelector('.ach-image');
+  const imgPreview = card.querySelector('.ach-preview');
+  imgInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      imgPreview.src = ev.target.result;
+      updateCompleteness();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  card.querySelector('.remove-entry-btn').addEventListener('click', () => {
+    card.remove();
+    updateCompleteness();
+  });
+
+  container.appendChild(card);
+}
+
+function setupQuickAddProject() {
+  const form = document.getElementById('quickProjectForm');
+  if (!form) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    collectStepData(currentStep);
+
+    const project = {
+      title: document.getElementById('qp-title').value.trim(),
+      url: document.getElementById('qp-url').value.trim(),
+      description: document.getElementById('qp-desc').value.trim()
+    };
+
+    if (!project.title) {
+      toast("Project name is required.", "error");
+      return;
+    }
+
+    profileData.projects = profileData.projects || [];
+    profileData.projects.push(project);
+    renderProjectsFromModel();
+    updateCompleteness();
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    showSpinner(submitBtn, "Adding...");
+    try {
+      await saveProfile();
+      form.reset();
+      toast("Project added to your profile.", "success");
+    } catch (err) {
+      console.error(err);
+      toast("Could not save project: " + err.message, "error");
+    } finally {
+      hideSpinner(submitBtn);
+    }
+  });
+}
+
+function renderProjectsFromModel() {
+  const projContainer = document.getElementById('proj-list');
+  projContainer.innerHTML = '';
+  profileData.projects.forEach(item => addProjectCard(item));
+}
+
+function placeholderImage() {
+  return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='72' viewBox='0 0 96 72'%3E%3Crect width='96' height='72' rx='10' fill='%23f1f5f9'/%3E%3Cpath d='M25 45h46M25 31h46M25 20h28' stroke='%2394a3b8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E";
+}
+
+function formatYearAsDate(year) {
+  return year ? `${year}-01-01` : '';
+}
+
 // ── Photo Upload handling ──
 function setupPhotoUpload() {
   const imgInput = document.getElementById('pi-photo');
@@ -611,6 +770,12 @@ function updateCompleteness() {
   const roles = document.getElementById('act-roles')?.value || (profileData.redrob_signals.preferred_roles || []).join(', ');
   if (roles) score += 10;
 
+  // 7. Achievements: optional bonus, capped at 100%
+  const achCards = document.querySelectorAll('#ach-list .entry-card').length;
+  if (achCards > 0 || (profileData.achievements && profileData.achievements.length > 0)) {
+    score = Math.min(100, score + 5);
+  }
+
   profileData.redrob_signals.profile_completeness_score = score;
 
   // Update UI Progress bar
@@ -651,6 +816,8 @@ async function saveProfile() {
   collectStepData(3);
   collectStepData(4);
   collectStepData(5);
+  collectStepData(6);
+  collectStepData(7);
 
   updateCompleteness();
 

@@ -13,7 +13,8 @@
   <nav class="navbar">
     <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
     <div class="portal-nav-links">
-      <a href="/candidate/profile.html" class="active">📝 Profile</a>
+      <a href="/candidate/home.html">🏠 Home</a>
+      <a href="/candidate/profile.html" class="active">📝 Edit Profile</a>
       <a href="/candidate/feed.html">👥 Talent Feed</a>
       <a href="/candidate/jobs.html">💼 Jobs</a>
     </div>
@@ -24,6 +25,19 @@
   </nav>
 
   <div class="page-wrap">
+    <section class="quick-project-panel glass-card fade-in-up">
+      <div>
+        <h2 class="quick-project-title">Quick-add Project</h2>
+        <p class="quick-project-copy">Add a featured project directly from your dashboard without opening the full projects step.</p>
+      </div>
+      <form id="quickProjectForm" class="quick-project-form">
+        <input type="text" id="qp-title" class="glass-input" placeholder="Project name" />
+        <input type="url" id="qp-url" class="glass-input" placeholder="Project URL" />
+        <input type="text" id="qp-desc" class="glass-input" placeholder="Short description" />
+        <button type="submit" class="btn btn-primary">Add Project</button>
+      </form>
+    </section>
+
     <div class="candidate-layout fade-in-up">
       <!-- Sidebar -->
       <aside class="profile-sidebar glass-card">

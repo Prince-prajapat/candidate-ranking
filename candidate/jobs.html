@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobs Board - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/candidate.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="portal-nav-links">
+      <a href="/candidate/home.html">🏠 Home</a>
+      <a href="/candidate/profile.html">📝 Edit Profile</a>
+      <a href="/candidate/feed.html">👥 Talent Feed</a>
+      <a href="/candidate/jobs.html" class="active">💼 Jobs</a>
+    </div>
+    <div class="nav-links">
+      <span class="badge">Candidate Portal</span>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <header class="page-header fade-in-up">
+      <h1>Jobs Board</h1>
+      <p>Search matching roles, compare salary bands, and save jobs to your profile.</p>
+    </header>
+
+    <section class="filter-bar fade-in-up">
+      <input type="search" id="jobs-search" class="glass-input" placeholder="Search role, company, or skill" />
+      <input type="search" id="jobs-location" class="glass-input" placeholder="Location" />
+      <select id="jobs-salary" class="glass-input">
+        <option value="">Any salary</option>
+        <option value="10">10+ LPA</option>
+        <option value="20">20+ LPA</option>
+        <option value="30">30+ LPA</option>
+        <option value="40">40+ LPA</option>
+      </select>
+    </section>
+
+    <section id="jobsGrid" class="cards-grid fade-in-up">
+      <div class="loading-pulse">Loading jobs...</div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initJobsBoard } from '/src/jobs.js';
+    initJobsBoard();
+  </script>
+</body>
+</html>

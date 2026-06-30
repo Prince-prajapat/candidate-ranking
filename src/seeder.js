@@ -1,4 +1,4 @@
-// src/seeder.js — Seeds Firestore with sample_candidates.json dataset
+// src/seeder.js — Seeds Firestore with the India Runs sample candidate dataset
 // Run from the recruiter dashboard via the "Seed Database" button
 
 import {
@@ -18,8 +18,8 @@ export async function seedDatabase(onProgress) {
     return { skipped: true, count: existingCount }
   }
 
-  // Fetch sample_candidates.json
-  const res = await fetch('/sample_candidates.json')
+  // Fetch the browser-friendly 50-candidate sample from the challenge package.
+  const res = await fetch('/india_runs_sample_candidates.json')
   const candidates = await res.json()
 
   let seeded = 0
@@ -41,6 +41,8 @@ export async function seedDatabase(onProgress) {
           photoURL: '',
         },
         _seeded: true,
+        _dataset: 'India Runs Data and AI Challenge',
+        _sample_source: 'india_runs_sample_candidates.json',
       })
     })
     await batch.commit()

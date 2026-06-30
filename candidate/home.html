@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Candidate Home - Recrob AI</title>
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/candidate.css" />
+</head>
+<body>
+  <div class="mesh-bg"></div>
+
+  <nav class="navbar">
+    <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/candidate/home.html'">⚡ Recrob AI</div>
+    <div class="portal-nav-links">
+      <a href="/candidate/home.html" class="active">🏠 Home</a>
+      <a href="/candidate/profile.html">📝 Edit Profile</a>
+      <a href="/candidate/feed.html">👥 Talent Feed</a>
+      <a href="/candidate/jobs.html">💼 Jobs</a>
+    </div>
+    <div class="nav-links candidate-nav-actions">
+      <span class="badge">Candidate Portal</span>
+      <div class="profile-menu">
+        <button class="profile-menu-btn" id="profileMenuBtn" type="button" aria-expanded="false">
+          <span class="mini-avatar" id="navAvatar">C</span>
+          <span id="navName">Profile</span>
+        </button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="profile-dropdown-head">
+            <div class="dropdown-avatar" id="dropdownAvatar">C</div>
+            <div>
+              <h3 id="dropdownName">Candidate</h3>
+              <p id="dropdownHeadline">Complete your profile</p>
+            </div>
+          </div>
+          <div class="dropdown-meta">
+            <span id="dropdownLocation">Location not added</span>
+            <span id="dropdownOpen">Open to work</span>
+          </div>
+          <div class="dropdown-progress">
+            <div class="progress-label">
+              <span>Profile Quality</span>
+              <span id="dropdownScore">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="dropdownProgress" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="skills-chips" id="dropdownSkills"></div>
+          <a class="btn btn-primary btn-sm" href="/candidate/profile.html">View / Edit Profile</a>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </nav>
+
+  <main class="page-wrap candidate-home-wrap">
+    <section class="linkedin-profile-shell glass-card fade-in-up">
+      <div class="profile-cover"></div>
+      <div class="profile-main">
+        <div class="profile-hero-row">
+          <div class="home-avatar" id="homeAvatar">C</div>
+          <div class="profile-actions">
+            <a class="btn btn-primary" href="/candidate/profile.html">Edit Profile</a>
+            <a class="btn btn-secondary" href="/candidate/jobs.html">Browse Jobs</a>
+          </div>
+        </div>
+        <h1 id="homeName">Candidate</h1>
+        <p class="home-headline" id="homeHeadline">Add your headline to stand out</p>
+        <div class="home-meta">
+          <span id="homeLocation">Location not added</span>
+          <span id="homeExperience">0 yrs experience</span>
+          <span class="open-badge" id="homeOpenStatus">Open to work</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-grid">
+      <div class="home-main-column">
+        <article class="glass-card home-section-card fade-in-up">
+          <h2>About</h2>
+          <p id="homeSummary">Your profile summary will appear here after you save it.</p>
+        </article>
+
+        <article class="glass-card home-section-card fade-in-up">
+          <div class="section-title-row">
+            <h2>Skills</h2>
+            <span class="badge" id="skillCount">0 skills</span>
+          </div>
+          <div class="skills-chips" id="homeSkills"></div>
+        </article>
+
+        <article class="glass-card home-section-card fade-in-up">
+          <div class="section-title-row">
+            <h2>Projects</h2>
+            <a href="/candidate/profile.html" class="section-link">Add project</a>
+          </div>
+          <div id="homeProjects" class="home-list"></div>
+        </article>
+
+        <article class="glass-card home-section-card fade-in-up">
+          <div class="section-title-row">
+            <h2>Achievements</h2>
+            <a href="/candidate/profile.html" class="section-link">Add achievement</a>
+          </div>
+          <div id="homeAchievements" class="home-list"></div>
+        </article>
+      </div>
+
+      <aside class="home-side-column">
+        <article class="glass-card home-section-card fade-in-up">
+          <h2>Profile Quality</h2>
+          <div class="big-score" id="homeScore">0%</div>
+          <div class="progress-track">
+            <div class="progress-fill" id="homeProgress" style="width: 0%;"></div>
+          </div>
+          <p class="home-muted">Keep your profile fresh so recruiters and the talent feed show stronger matches.</p>
+        </article>
+
+        <article class="glass-card home-section-card fade-in-up">
+          <h2>Job Preferences</h2>
+          <div class="preference-list">
+            <div><span>Roles</span><strong id="homeRoles">Not added</strong></div>
+            <div><span>Notice</span><strong id="homeNotice">30 days</strong></div>
+            <div><span>Salary</span><strong id="homeSalary">Not added</strong></div>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initCandidateHome } from '/src/home.js';
+    initCandidateHome();
+  </script>
+</body>
+</html>
