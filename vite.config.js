@@ -2,13 +2,6 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      'firebase/app': '/src/firebase.js',
-      'firebase/firestore': '/src/firebase.js',
-      'firebase/auth': '/src/firebase.js',
-    }
-  },
   build: {
     rollupOptions: {
       input: {

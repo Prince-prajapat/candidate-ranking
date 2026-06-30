@@ -340,11 +340,240 @@
 .form-nav {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 48px;
   border-top: 1px solid var(--border);
   padding-top: 24px;
 }
+
+/* Back button — always solid, never invisible */
+#prevBtn {
+  background: #ffffff;
+  border: 2px solid #94a3b8;
+  color: #475569;
+  font-weight: 700;
+  min-width: 130px;
+}
+#prevBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+#prevBtn:not(:disabled):hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  background: #f8fafc;
+}
+
+/* Next / Save Profile button — vivid, unmissable */
+#nextBtn {
+  min-width: 160px;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  color: white;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 20px rgba(37,99,235,0.35);
+  transition: all 0.25s ease;
+}
+#nextBtn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(37,99,235,0.45);
+}
+
+/* Save Profile state — extra glow pulse */
+#nextBtn.save-mode {
+  background: linear-gradient(135deg, #10b981 0%, #2563eb 100%);
+  box-shadow: 0 4px 24px rgba(16,185,129,0.4);
+  animation: savePulse 2s ease-in-out infinite;
+}
+@keyframes savePulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(16,185,129,0.4); }
+  50%       { box-shadow: 0 4px 36px rgba(16,185,129,0.65); }
+}
+
+/* ── Portal Nav Links ── */
+.portal-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.portal-nav-links a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.portal-nav-links a:hover {
+  background: #f1f5f9;
+  color: var(--text-primary);
+}
+.portal-nav-links a.active {
+  background: rgba(37,99,235,0.08);
+  color: var(--brand-primary);
+  border-color: rgba(37,99,235,0.18);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
+}
+
+/* ── Achievement cards ── */
+.achievement-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  animation: slideIn 0.3s ease;
+}
+.achievement-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(37,99,235,0.07);
+  border-radius: var(--radius-md);
+}
+
+/* ── Feed & Jobs shared cards ── */
+.candidate-card, .job-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.candidate-card:hover, .job-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(37,99,235,0.2);
+}
+.card-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.card-name {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 2px;
+}
+.card-sub {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+.skills-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.chip.green {
+  background: rgba(16,185,129,0.08);
+  color: #059669;
+  border-color: rgba(16,185,129,0.2);
+}
+.open-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+}
+.salary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  background: rgba(37,99,235,0.07);
+  border: 1px solid rgba(37,99,235,0.15);
+  border-radius: var(--radius-full);
+  padding: 4px 12px;
+}
+
+/* Feed / Jobs grid */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+.filter-bar input, .filter-bar select {
+  flex: 1;
+  min-width: 160px;
+}
+
+/* Page header */
+.page-header {
+  margin-bottom: 32px;
+}
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.page-header p {
+  color: var(--text-secondary);
+  margin: 0;
 }

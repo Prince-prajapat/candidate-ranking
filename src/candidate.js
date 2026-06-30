@@ -257,7 +257,7 @@ function collectStepData(step) {
         currentIndustry = industry;
       }
 
-      list.push({ company, title, start_date, end_date: is_current ? null : end_date, is_current, duration_months, industry, description });
+      list.push({ company, title, start_date, end_date: is_current ? '' : (end_date || ''), is_current, duration_months, industry, description });
     });
     profileData.career_history = list;
     profileData.profile.years_of_experience = parseFloat((totalMonths / 12).toFixed(1));
@@ -622,11 +622,30 @@ function updateCompleteness() {
   }
 }
 
-// ── Save profile to Mock Firestore ──
+// ── Recursively strip null / undefined so Firestore won't reject the document ──
+function sanitizeForFirestore(obj) {
+  if (Array.isArray(obj)) {
+    return obj.map(sanitizeForFirestore);
+  }
+  if (obj !== null && typeof obj === 'object') {
+    const clean = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v === undefined || v === null) {
+        clean[k] = '';
+      } else {
+        clean[k] = sanitizeForFirestore(v);
+      }
+    }
+    return clean;
+  }
+  return obj;
+}
+
+// ── Save profile to Firestore ──
 async function saveProfile() {
   // Collect all data from step 6 fields first
   collectStepData(TOTAL_STEPS);
-  
+
   // Also perform a full final collection of all steps just in case
   collectStepData(1);
   collectStepData(3);
@@ -638,5 +657,5 @@ async function saveProfile() {
   profileData.redrob_signals.last_active_date = new Date().toISOString().split('T')[0];
 
   const docRef = doc(db, 'candidates', currentUser.uid);
-  await setDoc(docRef, profileData);
+  await setDoc(docRef, sanitizeForFirestore(profileData));
 }

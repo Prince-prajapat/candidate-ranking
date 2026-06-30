@@ -12,6 +12,11 @@
 
   <nav class="navbar">
     <div class="nav-logo" style="cursor: pointer;" onclick="window.location.href='/'">⚡ Recrob AI</div>
+    <div class="portal-nav-links">
+      <a href="/candidate/profile.html" class="active">📝 Profile</a>
+      <a href="/candidate/feed.html">👥 Talent Feed</a>
+      <a href="/candidate/jobs.html">💼 Jobs</a>
+    </div>
     <div class="nav-links">
       <span class="badge">Candidate Portal</span>
       <button class="btn btn-secondary btn-sm" id="logoutBtn">Logout</button>
@@ -62,6 +67,10 @@
           <div class="step-indicator" data-step="6">
             <div class="step-dot">6</div>
             <span>Preferences</span>
+          </div>
+          <div class="step-indicator" data-step="7">
+            <div class="step-dot">7</div>
+            <span>Achievements</span>
           </div>
         </nav>
       </aside>
@@ -211,6 +220,18 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Step 7: Achievements -->
+        <div class="form-step" data-step="7">
+          <h2 class="step-title">Achievements & Certifications</h2>
+          <p class="step-subtitle">Showcase awards, certificates, hackathon wins, and publications</p>
+
+          <div id="ach-list" style="margin-bottom: 20px;">
+            <!-- Dynamic entries here -->
+          </div>
+
+          <button class="add-entry-btn" id="add-ach-btn">+ Add Achievement</button>
         </div>
 
         <!-- Navigation Buttons -->
