@@ -129,15 +129,42 @@ http://localhost:8080/login.html
 
 ## Configuration
 
-Create a `.env` file at the project root to store environment‑specific values. Example:
+This project uses **Firebase** for authentication and data storage. The connection credentials are stored in a `.env` file that is **never committed to GitHub**.
 
-```dotenv
-# .env example (do not commit this file)
-API_BASE_URL=https://api.yourdomain.com
-JWT_SECRET=your‑super‑secret‑key
+### Step 1 – Copy the example file
+
+```bash
+cp .env.example .env
 ```
 
-> **Note:** The `.env` file is ignored by Git (`.gitignore`) to keep secrets safe.
+> On Windows (PowerShell):
+> ```powershell
+> Copy-Item .env.example .env
+> ```
+
+### Step 2 – Fill in your Firebase credentials
+
+Open `.env` and replace each placeholder with your real Firebase project values:
+
+```dotenv
+VITE_FIREBASE_API_KEY=your_firebase_api_key_here
+VITE_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project_id.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
+
+#### Where to find these values
+
+1. Go to [Firebase Console](https://console.firebase.google.com/).
+2. Select your project (or create a new one).
+3. Click the ⚙️ **Project settings** gear icon.
+4. Under **Your apps**, click the web app (`</>`) icon.
+5. Copy the `firebaseConfig` values into your `.env`.
+
+> **Security Note:** The `.env` file is listed in `.gitignore` so it will **never** be pushed to GitHub. The `.env.example` file (with placeholder values only) is committed so collaborators know which keys are needed.
 
 ---
 
