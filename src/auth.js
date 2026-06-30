@@ -23,7 +23,10 @@ export async function login(email, password) {
   const userData = userDoc.exists() ? userDoc.data() : { role: 'candidate', name: result.user.email.split('@')[0] };
   
   const updatedUser = {
-    ...result.user,
+    uid: result.user.uid,
+    email: result.user.email,
+    displayName: result.user.displayName,
+    photoURL: result.user.photoURL,
     role: userData.role,
     name: userData.name
   };
@@ -44,7 +47,10 @@ export async function register(email, password, role, name) {
   });
   
   const updatedUser = {
-    ...result.user,
+    uid: result.user.uid,
+    email: result.user.email,
+    displayName: result.user.displayName,
+    photoURL: result.user.photoURL,
     role,
     name
   };
@@ -73,7 +79,10 @@ export async function loginWithGoogle(role = 'candidate') {
   }
   
   const updatedUser = {
-    ...result.user,
+    uid: result.user.uid,
+    email: result.user.email,
+    displayName: result.user.displayName,
+    photoURL: result.user.photoURL,
     role: userData.role,
     name: userData.name
   };
@@ -89,7 +98,10 @@ export function onAuth(callback) {
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       const userData = userDoc.exists() ? userDoc.data() : { role: 'candidate', name: user.email.split('@')[0] };
       const updatedUser = {
-        ...user,
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
         role: userData.role,
         name: userData.name
       };
