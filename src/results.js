@@ -1,9 +1,10 @@
 // src/results.js — AI Shortlist Results Logic
 
 import { onAuth, logout } from './auth.js';
-import { db, doc, getDoc, collection, getDocs } from './firebase.js';
+import { db, doc, getDoc } from './firebase.js';
 import { rank, toSubmissionRows } from './ranking.js';
 import { toast } from './utils.js';
+import { getLocalJob, loadSampleCandidates } from './sampleData.js';
 
 let currentJob = null;
 let allRankedResults = [];
@@ -71,14 +72,12 @@ export function initResultsPage() {
 async function loadJobAndRankings(jobId) {
   const container = document.getElementById('resultsContainer');
   try {
-    const jobSnap = await getDoc(doc(db, 'jobs', jobId));
-    if (!jobSnap.exists()) {
+    currentJob = await loadJob(jobId);
+    if (!currentJob) {
       toast("Posted opportunity not found.", "error");
       setTimeout(() => window.location.href = '/recruiter/dashboard.html', 1500);
       return;
     }
-    
-    currentJob = { id: jobSnap.id, ...jobSnap.data() };
 
     // Update Header UI
     document.getElementById('jobTitle').textContent = currentJob.title;
@@ -95,6 +94,21 @@ async function loadJobAndRankings(jobId) {
   }
 }
 
+async function loadJob(jobId) {
+  const localJob = getLocalJob(jobId);
+  if (localJob) {
+    return { id: localJob.jobId, ...localJob };
+  }
+
+  try {
+    const jobSnap = await getDoc(doc(db, 'jobs', jobId));
+    return jobSnap.exists() ? { id: jobSnap.id, ...jobSnap.data() } : null;
+  } catch (err) {
+    console.warn("Firestore job lookup unavailable.", err);
+    return null;
+  }
+}
+
 // ── Execute Ranking Calculation ──
 async function runRankingPipeline(jobId) {
   const container = document.getElementById('resultsContainer');
@@ -103,26 +117,7 @@ async function runRankingPipeline(jobId) {
   }
 
   try {
-    const candidatesSnap = await getDocs(collection(db, 'candidates'));
-    
-    const rawCandidates = [];
-    candidatesSnap.docs.forEach(docSnap => {
-      const c = docSnap.data();
-      if (c) rawCandidates.push(c);
-    });
-
-    if (rawCandidates.length === 0) {
-      if (container) {
-        container.innerHTML = `
-          <div class="glass-card" style="padding: 40px; text-align:center; color: var(--text-secondary);">
-            <div style="font-size:3rem; margin-bottom:16px;">🎓</div>
-            <h3>No Candidates Seeded in Firestore</h3>
-            <p style="font-size:0.9rem; margin-top:8px;">Please go back to the Recruiter Dashboard and click <strong>🚀 Seed India Runs Sample</strong> to load the sample recruitment dataset.</p>
-          </div>
-        `;
-      }
-      return;
-    }
+    const rawCandidates = await loadSampleCandidates();
 
     // Execute Ranking Logic
     allRankedResults = rank(rawCandidates, currentJob);

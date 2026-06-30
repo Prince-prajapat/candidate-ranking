@@ -4,6 +4,7 @@ import { toast } from './utils.js';
 
 let currentUser = null;
 let profileData = null;
+const LOCAL_PROFILE_PREFIX = 'recrob_candidate_profile_';
 
 export function initCandidateHome() {
   onAuth((user) => {
@@ -27,14 +28,25 @@ export function initCandidateHome() {
 
 async function loadCandidateHome() {
   try {
+    const localProfile = loadLocalProfile();
     const snap = await getDoc(doc(db, 'candidates', currentUser.uid));
-    profileData = snap.exists() ? snap.data() : createEmptyProfile();
+    profileData = localProfile || (snap.exists() ? snap.data() : createEmptyProfile());
     renderHome();
   } catch (err) {
     console.error(err);
-    toast("Could not load your profile home.", "error");
-    profileData = createEmptyProfile();
+    profileData = loadLocalProfile() || createEmptyProfile();
+    if (!profileData) {
+      toast("Could not load your profile home.", "error");
+    }
     renderHome();
+  }
+}
+
+function loadLocalProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(`${LOCAL_PROFILE_PREFIX}${currentUser.uid}`) || 'null');
+  } catch {
+    return null;
   }
 }
 

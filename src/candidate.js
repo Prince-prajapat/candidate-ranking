@@ -7,6 +7,7 @@ import { toast, showSpinner, hideSpinner } from './utils.js';
 let currentUser = null;
 let currentStep = 1;
 const TOTAL_STEPS = 7;
+const LOCAL_PROFILE_PREFIX = 'recrob_candidate_profile_';
 
 // Local model for profile data
 let profileData = {
@@ -76,9 +77,10 @@ export function initCandidatePage() {
 async function loadProfile() {
   const docRef = doc(db, 'candidates', currentUser.uid);
   try {
+    const localProfile = loadLocalProfile();
     const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
+    if (localProfile || docSnap.exists()) {
+      const data = localProfile || docSnap.data();
       // Merge with default model to prevent undefined references
       profileData = {
         ...profileData,
@@ -101,6 +103,23 @@ async function loadProfile() {
     updateCompleteness();
   } catch (err) {
     console.error("Error loading profile: ", err);
+    const localProfile = loadLocalProfile();
+    if (localProfile) {
+      profileData = {
+        ...profileData,
+        ...localProfile,
+        profile: { ...profileData.profile, ...localProfile.profile },
+        redrob_signals: { ...profileData.redrob_signals, ...localProfile.redrob_signals },
+        skills: localProfile.skills || [],
+        career_history: localProfile.career_history || [],
+        education: localProfile.education || [],
+        projects: localProfile.projects || [],
+        achievements: localProfile.achievements || []
+      };
+      populateForm();
+      updateCompleteness();
+      return;
+    }
     toast("Error retrieving profile data.", "error");
   }
 }
@@ -787,23 +806,60 @@ function updateCompleteness() {
   }
 }
 
-// ── Recursively strip null / undefined so Firestore won't reject the document ──
-function sanitizeForFirestore(obj) {
-  if (Array.isArray(obj)) {
-    return obj.map(sanitizeForFirestore);
+function saveLocalProfile(profile) {
+  localStorage.setItem(`${LOCAL_PROFILE_PREFIX}${currentUser.uid}`, JSON.stringify(toPlainData(profile)));
+}
+
+function loadLocalProfile() {
+  try {
+    return JSON.parse(localStorage.getItem(`${LOCAL_PROFILE_PREFIX}${currentUser.uid}`) || 'null');
+  } catch {
+    return null;
   }
-  if (obj !== null && typeof obj === 'object') {
+}
+
+function toPlainData(value) {
+  if (Array.isArray(value)) {
+    return value.map(toPlainData);
+  }
+  if (value === undefined || value === null) {
+    return '';
+  }
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return value;
+  }
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  if (typeof File !== 'undefined' && value instanceof File) {
+    return '';
+  }
+  if (typeof Blob !== 'undefined' && value instanceof Blob) {
+    return '';
+  }
+  if (typeof value === 'object') {
     const clean = {};
-    for (const [k, v] of Object.entries(obj)) {
-      if (v === undefined || v === null) {
-        clean[k] = '';
-      } else {
-        clean[k] = sanitizeForFirestore(v);
+    Object.entries(value).forEach(([key, child]) => {
+      if (typeof child !== 'function') {
+        clean[key] = toPlainData(child);
       }
-    }
+    });
     return clean;
   }
-  return obj;
+  return String(value);
+}
+
+function toFirestoreProfile(profile) {
+  const clean = toPlainData(profile);
+  clean.profile = clean.profile || {};
+  if (typeof clean.profile.photoURL === 'string' && clean.profile.photoURL.startsWith('data:image/')) {
+    clean.profile.photoURL = '';
+  }
+  clean.achievements = (clean.achievements || []).map(item => ({
+    ...item,
+    image: typeof item.image === 'string' && item.image.startsWith('data:image/') ? '' : item.image
+  }));
+  return clean;
 }
 
 // ── Save profile to Firestore ──
@@ -823,6 +879,12 @@ async function saveProfile() {
 
   profileData.redrob_signals.last_active_date = new Date().toISOString().split('T')[0];
 
+  saveLocalProfile(profileData);
+
   const docRef = doc(db, 'candidates', currentUser.uid);
-  await setDoc(docRef, sanitizeForFirestore(profileData));
+  try {
+    await setDoc(docRef, toFirestoreProfile(profileData));
+  } catch (err) {
+    console.warn("Firestore profile save failed; profile saved locally.", err);
+  }
 }

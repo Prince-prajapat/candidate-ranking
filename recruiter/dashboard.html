@@ -22,19 +22,6 @@
   </nav>
 
   <div class="page-wrap">
-    <!-- Seeding utility alert card for hackathon reviewers -->
-    <div class="glass-card fade-in-up" style="padding: 20px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; border-color: var(--border-glow); gap: 16px; flex-wrap: wrap;">
-      <div>
-        <h4 style="font-weight: 800; color: var(--brand-primary);">💡 Hackathon Quick-Start: Seed Candidates Dataset</h4>
-        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px;">
-          Bulk-populate Firestore with the official 50-profile sample from the India Runs Data and AI Challenge. The full package includes 100,000 candidates and is better imported server-side.
-        </p>
-      </div>
-      <button class="btn btn-primary" id="seedDatabaseBtn" style="padding: 10px 20px; font-size: 0.85rem;">
-        🚀 Seed India Runs Sample
-      </button>
-    </div>
-
     <div class="recruiter-layout fade-in-up" style="animation-delay: 0.1s;">
       <!-- Left column: Post a Job -->
       <aside class="job-form-panel glass-card">
@@ -109,37 +96,8 @@
 
   <script type="module">
     import { initRecruiterDashboard } from '/src/recruiter.js';
-    import { seedDatabase, getCandidateCount } from '/src/seeder.js';
-    import { toast } from '/src/utils.js';
 
     initRecruiterDashboard();
-
-    // Setup seeder button trigger
-    const seedBtn = document.getElementById('seedDatabaseBtn');
-    seedBtn.addEventListener('click', async () => {
-      seedBtn.disabled = true;
-      const originalText = seedBtn.textContent;
-      seedBtn.textContent = '⏳ Fetching & Importing...';
-      try {
-        const res = await seedDatabase((imported, total) => {
-          seedBtn.textContent = `⏳ Importing (${imported}/${total})...`;
-        });
-        if (res.skipped) {
-          toast(`Database already seeded with ${res.count} candidates!`, 'info');
-        } else {
-          toast(`Successfully seeded ${res.seeded} candidates!`, 'success');
-        }
-      } catch (err) {
-        console.error(err);
-        toast('Failed to seed database: ' + err.message, 'error');
-      } finally {
-        seedBtn.disabled = false;
-        seedBtn.textContent = originalText;
-        // Trigger page updates
-        const activeCount = await getCandidateCount();
-        console.log("Candidate count in DB is now: ", activeCount);
-      }
-    });
   </script>
 </body>
 </html>

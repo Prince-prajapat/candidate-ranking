@@ -1,6 +1,6 @@
 import { onAuth, logout } from './auth.js';
-import { db, collection, getDocs } from './firebase.js';
 import { toast } from './utils.js';
+import { loadSampleCandidates } from './sampleData.js';
 
 let currentUser = null;
 let candidates = [];
@@ -29,15 +29,12 @@ export function initTalentFeed() {
 
 async function loadCandidates() {
   try {
-    const snap = await getDocs(collection(db, 'candidates'));
-    candidates = snap.docs
-      .filter(docSnap => docSnap.id !== currentUser.uid)
-      .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
-      .filter(candidate => candidate.redrob_signals?.open_to_work_flag === true);
+    const sampleCandidates = await loadSampleCandidates();
+    candidates = sampleCandidates.map(candidate => ({ id: candidate.candidate_id, ...candidate }));
     renderFeed();
   } catch (err) {
     console.error(err);
-    document.getElementById('feedGrid').innerHTML = `<div class="empty-state">Unable to load the talent feed right now.</div>`;
+    document.getElementById('feedGrid').innerHTML = `<div class="empty-state">Unable to load the sample talent dataset right now.</div>`;
     toast("Could not load talent feed.", "error");
   }
 }
@@ -61,7 +58,7 @@ function renderFeed() {
   });
 
   if (visible.length === 0) {
-    grid.innerHTML = `<div class="empty-state">No open-to-work candidates match these filters.</div>`;
+    grid.innerHTML = `<div class="empty-state">No sample candidates match these filters.</div>`;
     return;
   }
 
@@ -79,7 +76,8 @@ function renderCandidateCard(candidate) {
   const name = profile.anonymized_name || 'Candidate';
   const initial = name.charAt(0).toUpperCase();
   const skills = (candidate.skills || []).slice(0, 5);
-  const salary = candidate.redrob_signals?.expected_salary_range_inr_lpa || {};
+  const signals = candidate.redrob_signals || {};
+  const salary = signals.expected_salary_range_inr_lpa || {};
 
   return `
     <article class="candidate-card">
@@ -91,7 +89,7 @@ function renderCandidateCard(candidate) {
         </div>
       </div>
       <div class="feed-card-meta">
-        <span class="open-badge">Open to work</span>
+        <span class="open-badge">${signals.open_to_work_flag ? 'Open to work' : 'Dataset profile'}</span>
         <span>${escapeHtml(profile.location || 'Location flexible')}</span>
       </div>
       <p class="card-summary">${escapeHtml(truncate(profile.summary || 'Candidate profile summary will appear here.', 150))}</p>

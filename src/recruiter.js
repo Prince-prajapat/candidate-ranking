@@ -1,8 +1,9 @@
 // src/recruiter.js — Recruiter Dashboard Logic
 
 import { onAuth, logout } from './auth.js';
-import { db, doc, collection, getDocs, setDoc, deleteDoc, getCountFromServer } from './firebase.js';
+import { db, doc, collection, getDocs, setDoc, deleteDoc } from './firebase.js';
 import { toast, showSpinner, hideSpinner } from './utils.js';
+import { deleteLocalJob, getLocalJobs, loadSampleCandidates, saveLocalJob } from './sampleData.js';
 
 let currentUser = null;
 
@@ -40,8 +41,10 @@ export function initRecruiterDashboard() {
     
     showSpinner(submitBtn, "Posting Job...");
     try {
-      await postNewJob();
-      toast("Job posted successfully!", "success");
+      const result = await postNewJob();
+      toast(result.storage === 'local'
+        ? "Job saved locally and ready for ranking."
+        : "Job posted successfully!", "success");
       jobForm.reset();
       await loadJobsList();
     } catch (err) {
@@ -62,18 +65,11 @@ async function loadJobsList() {
   jobsListContainer.innerHTML = `<div class="loading-pulse">🤖 Loading your posted opportunities...</div>`;
 
   try {
-    const jobsSnap = await getDocs(collection(db, 'jobs'));
-    const candidatesCountSnap = await getCountFromServer(collection(db, 'candidates'));
-    const totalCandidates = candidatesCountSnap.data().count;
-
-    // Filter jobs by postedBy field (current recruiter email)
-    const myJobs = [];
-    jobsSnap.docs.forEach(doc => {
-      const data = doc.data();
-      if (data && data.postedBy === currentUser.email) {
-        myJobs.push({ id: doc.id, ...data });
-      }
-    });
+    const sampleCandidates = await loadSampleCandidates();
+    const totalCandidates = sampleCandidates.length;
+    const localJobs = getLocalJobs(currentUser.email);
+    const firestoreJobs = await loadFirestoreJobs();
+    const myJobs = mergeJobs(localJobs, firestoreJobs);
 
     // Update count badge
     if (jobsCountBadge) {
@@ -149,6 +145,31 @@ async function loadJobsList() {
   }
 }
 
+async function loadFirestoreJobs() {
+  try {
+    const jobsSnap = await getDocs(collection(db, 'jobs'));
+    const jobs = [];
+    jobsSnap.docs.forEach(docSnap => {
+      const data = docSnap.data();
+      if (data && data.postedBy === currentUser.email) {
+        jobs.push({ id: docSnap.id, ...data });
+      }
+    });
+    return jobs;
+  } catch (err) {
+    console.warn("Firestore jobs unavailable; using local jobs only.", err);
+    return [];
+  }
+}
+
+function mergeJobs(localJobs, firestoreJobs) {
+  const map = new Map();
+  [...firestoreJobs, ...localJobs].forEach(job => {
+    map.set(job.jobId || job.id, job);
+  });
+  return [...map.values()];
+}
+
 // ── Save Job Details ──
 async function postNewJob() {
   const title = document.getElementById('jf-title').value;
@@ -184,11 +205,22 @@ async function postNewJob() {
     createdAt: new Date().toISOString()
   };
 
-  await setDoc(jobRef, jobDoc);
+  try {
+    await setDoc(jobRef, jobDoc);
+    return { ...jobDoc, id: jobId, storage: 'firestore' };
+  } catch (err) {
+    console.warn("Firestore rejected job write; saving locally.", err);
+    return saveLocalJob(jobDoc);
+  }
 }
 
 // ── Delete Posted Job ──
 async function deleteJob(jobId) {
-  const jobRef = doc(db, 'jobs', jobId);
-  await deleteDoc(jobRef);
+  deleteLocalJob(jobId);
+  try {
+    const jobRef = doc(db, 'jobs', jobId);
+    await deleteDoc(jobRef);
+  } catch (err) {
+    console.warn("Firestore delete skipped; local job removed.", err);
+  }
 }

@@ -883,6 +883,30 @@
   gap: 16px;
   align-items: flex-start;
 }
+.candidate-rank-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.candidate-rank-panel div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.candidate-rank-panel span {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.candidate-rank-panel strong {
+  color: var(--brand-primary);
+  font-size: 1.15rem;
+}
 .empty-state {
   grid-column: 1 / -1;
   background: #ffffff;

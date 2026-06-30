@@ -1,6 +1,6 @@
 import { onAuth, logout } from './auth.js';
-import { db, collection, getDocs } from './firebase.js';
 import { toast } from './utils.js';
+import { loadSampleCandidates } from './sampleData.js';
 
 let candidates = [];
 let filteredCandidates = [];
@@ -33,13 +33,13 @@ export function initRecruiterCandidates() {
 async function loadCandidates() {
   const grid = document.getElementById('candidatesGrid');
   try {
-    const snap = await getDocs(collection(db, 'candidates'));
-    candidates = snap.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+    const sampleCandidates = await loadSampleCandidates();
+    candidates = sampleCandidates.map(candidate => ({ id: candidate.candidate_id, ...candidate }));
     candidates.sort((a, b) => (b.redrob_signals?.profile_completeness_score || 0) - (a.redrob_signals?.profile_completeness_score || 0));
     filterAndRender();
   } catch (err) {
     console.error(err);
-    grid.innerHTML = `<div class="empty-state">Unable to load candidates. Seed the dataset from the dashboard first.</div>`;
+    grid.innerHTML = `<div class="empty-state">Unable to load the bundled sample candidates.</div>`;
     toast("Could not load candidates.", "error");
   }
 }
