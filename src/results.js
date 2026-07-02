@@ -5,6 +5,7 @@ import { db, doc, getDoc } from './firebase.js';
 import { rank, toSubmissionRows } from './ranking.js';
 import { toast } from './utils.js';
 import { getLocalJob, loadSampleCandidates } from './sampleData.js';
+import * as XLSX from 'xlsx';
 
 let currentJob = null;
 let allRankedResults = [];
@@ -49,6 +50,7 @@ export function initResultsPage() {
   // Setup Exports
   document.getElementById('exportJSON')?.addEventListener('click', () => downloadShortlistJSON());
   document.getElementById('exportCSV')?.addEventListener('click', () => downloadShortlistCSV());
+  document.getElementById('exportXLSX')?.addEventListener('click', () => downloadShortlistXLSX());
 
   // Setup Re-rank button
   document.getElementById('rerankBtn')?.addEventListener('click', async () => {
@@ -357,4 +359,40 @@ function downloadShortlistCSV() {
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
   toast("CSV export initiated!", "success");
+}
+
+// ── Export Shortlist to XLSX ──
+function downloadShortlistXLSX() {
+  if (filteredResults.length === 0) {
+    toast("No candidates to export.", "info");
+    return;
+  }
+
+  const rows = filteredResults.map((r) => ({
+    Rank: r.rank,
+    Score: r.total,
+    CandidateID: r.candidateId,
+    Name: r.candidate.profile?.anonymized_name || '',
+    Headline: r.candidate.profile?.headline || '',
+    Reasoning: r.reasoning,
+    Skills: (r.candidate.skills || []).map(skill => skill.name).join(', '),
+    ExperienceYears: r.candidate.profile?.years_of_experience || '',
+    Company: r.candidate.profile?.current_employer || '',
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Shortlist');
+  const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `shortlist_job_${currentJob.jobId}.xlsx`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+  toast("XLSX export initiated!", "success");
 }
