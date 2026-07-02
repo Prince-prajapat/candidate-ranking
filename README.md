@@ -211,7 +211,7 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 ## Contact
 
 **Prince Prajapat** – *Creator*  
-Email: [prince@example.com](mailto:prince@example.com)  
+Email:princeprajapat9982@gmail.com
 GitHub: [@Prince-prajapat](https://github.com/Prince-prajapat)
 
 ---
